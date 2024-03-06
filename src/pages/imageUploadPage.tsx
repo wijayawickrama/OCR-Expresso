@@ -50,8 +50,6 @@ export function Page1({ className, children, ...rest }: AppProps) {
     }
   };
 
-
-
   return (
     <Box className={className}>
       <IconButton
