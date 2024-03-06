@@ -63,11 +63,10 @@ export function Page2({ className, children, ...rest }: AppProps) {
                   lineHeight="1.2"
                   letterSpacing="tight"
                 >
-                  Lorem ipsum dolor sit amet, consectetur
+                  O C R Expresso
                 </Heading>
                 <Text fontSize="xl" mt="4" maxW="xl" mx="auto">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore
+                Grammar Correction of Handwritten Documents
                 </Text>
               </Box>
 
@@ -89,7 +88,7 @@ export function Page2({ className, children, ...rest }: AppProps) {
             justifyContent="center"
           >
             <Stack>
-              <Text mb="8px">Extracted Text: </Text>
+              <Text mb="8px">Paste Your Text Here: </Text>
               <Box
                 key="{member.name}"
                 bg="#858d9d"
