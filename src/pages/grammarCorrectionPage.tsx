@@ -1,31 +1,52 @@
+import React, { useState } from "react";
 import {
   Box,
   BoxProps,
   Button,
-  Circle,
   Heading,
-  Img,
-  LightMode,
-  SimpleGrid,
-  Stack,
   Text,
-  useColorModeValue as mode,
-  VisuallyHidden,
   IconButton,
-  AspectRatio,
   Flex,
   Textarea,
 } from "@chakra-ui/react";
-import * as React from "react";
 import { Link } from "react-router-dom";
-import { ReactNode } from "react";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 
 export type AppProps = BoxProps & {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
-export function Page2({ className, children, ...rest }: AppProps) {
+export function TextCorrection({ className, children, ...rest }: AppProps) {
+  const [inputText, setInputText] = useState("");
+  const [correctedText, setCorrectedText] = useState("");
+
+  const handleConvert = async () => {
+    try {
+      const text = inputText;
+
+      console.log("Text to send:", text);
+
+      const response = await fetch("http://localhost:5000/convert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: text }),
+      });
+
+      console.log("Request:", response);
+
+      if (response.ok) {
+        const data = await response.json();
+        setCorrectedText(data.corrected_text);
+      } else {
+        console.error("Failed to convert text:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error converting text:", error);
+    }
+  };
+
   return (
     <Box className={className}>
       <IconButton
@@ -39,90 +60,80 @@ export function Page2({ className, children, ...rest }: AppProps) {
         size="sm"
         icon={<ArrowBackIcon />}
       />
-      <Box as="section" h="100vh" bg="#1a202c" color="white" py="7.5rem" height="fit-content">
-        <Box
-          maxW={{ base: "xl", md: "5xl" }}
-          mx="auto"
-          h="100%"
-          px={{ base: "6", md: "8" }}
-        >
-          <Stack
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            mb={6}
-          >
-            <Box>
-              <Box textAlign="center">
-                <Heading
-                  as="h1"
-                  size="3xl"
-                  fontWeight="extrabold"
-                  maxW="48rem"
-                  mx="auto"
-                  lineHeight="1.2"
-                  letterSpacing="tight"
-                >
-                  O C R Expresso
-                </Heading>
-                <Text fontSize="xl" mt="4" maxW="xl" mx="auto">
-                Grammar Correction of Handwritten Documents
-                </Text>
-              </Box>
+      <Box
+        as="section"
+        h="100vh"
+        bg="#1a202c"
+        color="white"
+        py="7.5rem"
+        height="fit-content"
+      >
+        <Box maxW={{ base: "xl", md: "5xl" }} mx="auto" h="100%" px={{ base: "6", md: "8" }}>
+          <Box textAlign="center">
+            <Heading
+              as="h1"
+              size="3xl"
+              fontWeight="extrabold"
+              maxW="48rem"
+              mx="auto"
+              lineHeight="1.2"
+              letterSpacing="tight"
+            >
+              O C R Expresso
+            </Heading>
+            <Text fontSize="xl" mt="4" maxW="xl" mx="auto">
+              Grammar Correction of Handwritten Documents
+            </Text>
+          </Box>
 
-              <Stack
-                justify="center"
-                direction={{ base: "column", md: "row" }}
-                mt="10"
-                mb="30px"
-                spacing="4"
-              ></Stack>
-              <Stack alignItems="center"></Stack>
-            </Box>
-          </Stack>
-          <Flex
-            direction="column"
-            gap="4"
-            w="100%"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Stack>
+          <Flex direction="column" gap="4" w="100%" alignItems="center" justifyContent="center">
+            <Box>
               <Text mb="8px">Paste Your Text Here: </Text>
               <Box
-                key="{member.name}"
                 bg="#858d9d"
                 p="6"
                 w="500px"
                 h="500px"
-                boxShadow={mode("sm", "sm-dark")}
                 borderRadius="md"
               >
-                <Textarea placeholder="" size="sm" h="100%" />
+                <Textarea
+                  placeholder=""
+                  size="sm"
+                  h="100%"
+                  value={inputText}
+                  style={{ fontSize: "20px" }}
+                  onChange={(e) => setInputText(e.target.value)}
+                />
               </Box>
-            </Stack>
+            </Box>
             <Button
               rightIcon={<ArrowForwardIcon />}
               colorScheme="blue"
               variant="solid"
               mt="8"
+              onClick={handleConvert}
             >
               Convert
             </Button>
-            <Stack>
+            <Box>
               <Text mb="8px">Corrected Text: </Text>
               <Box
-                key="{member.name}"
                 bg="#858d9d"
                 p="6"
                 w="500px"
                 h="500px"
-                boxShadow={mode("sm", "sm-dark")}
                 borderRadius="md"
               >
-                <Textarea value="" placeholder="" size="sm" h="100%" disabled />
+                <Textarea
+                  value={correctedText}
+                  placeholder=""
+                  size="sm"
+                  h="100%"
+                  style={{ fontSize: "20px",color:"white" }}
+                  
+                />
               </Box>
-            </Stack>
+            </Box>
           </Flex>
         </Box>
       </Box>

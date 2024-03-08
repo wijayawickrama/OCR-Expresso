@@ -38,7 +38,7 @@ export type AppProps = BoxProps & {
   children: ReactNode;
 };
 
-export function Page1({ className, children, ...rest }: AppProps) {
+export function ImageUpload({ className, children, ...rest }: AppProps) {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
