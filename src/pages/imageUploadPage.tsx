@@ -42,6 +42,7 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+ 
   const handleRemoveImage = () => {
     setUploadedImage(null);
 
