@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from pytesseract import pytesseract
 from flask_cors import CORS
 import tensorflow as tf
 from transformers import GPT2Tokenizer
@@ -31,11 +32,42 @@ def convert_text():
         # Print the corrected text received from BE
         print("Received text from BE:", text)
 
+        
+        #ocr = OCR()
+        #txt = ocr.getText("D:\Personal\Edu\handwritting-to-text-with-ocr.png");
+        #print (txt)
         # Return the corrected text to the +
         return jsonify({'corrected_text': text}), 200
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/extract_txt', methods=['POST'])
+def extract_text():
+    path = "D:\Personal\Edu\handwritting-to-text-with-ocr.png"# request.json.get('path','')
+   # print(path)
+    ocr = OCR()
+    txt = ocr.getText(path);
+    print (txt)
+    return jsonify({'extracted_txt':txt}),200
+
+
+
+class OCR:
+    def __init__(self) :
+        self.path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+    
+    def getText(self,filePath):
+        try:
+            pytesseract.tesseract_cmd = self.path
+            text = pytesseract.image_to_string(filePath)
+            return text
+        except Exception as e:
+            print("Something wrong")
+            return("Error")
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

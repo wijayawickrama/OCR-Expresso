@@ -16,7 +16,7 @@ class OCR:
         
 
 ocr = OCR()
-txt = ocr.getText(r"D:\Personal\Edu\handwritting-to-text-with-ocr.png");
+txt = ocr.getText("D:\Personal\Edu\handwritting-to-text-with-ocr.png");
 print (txt)
 
 

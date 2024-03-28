@@ -41,6 +41,36 @@ export type AppProps = BoxProps & {
 export function ImageUpload({ className, children, ...rest }: AppProps) {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  //
+  const [inputPath, setInputText] = useState("");
+  const [correctedText, setCorrectedText] = useState("");
+  //
+  const textExtract = async () => {
+    try {
+      const path = inputPath;
+
+      console.log("Text to send:", path);
+
+      const response = await fetch("http://localhost:5000/extract_txt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: path }),
+      });
+
+      console.log("Request:", response);
+
+      if (response.ok) {
+        const data = await response.json();
+        setCorrectedText(data.corrected_text);
+      } else {
+        console.error("Failed to convert text:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error converting text:", error);
+    }
+  };
 
  
   const handleRemoveImage = () => {
@@ -123,6 +153,7 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
               <Stack alignItems="center">
               {uploadedImage && (
                   <Stack w="full" spacing={4} alignItems="center">
+                    <Text>{URL.createObjectURL(uploadedImage)}</Text>
                     <AspectRatio w="100%">
                       <Image
                         src={URL.createObjectURL(uploadedImage)}
