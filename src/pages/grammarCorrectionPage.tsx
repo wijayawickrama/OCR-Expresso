@@ -24,7 +24,7 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
     try {
       const text = inputText;
 
-      console.log("Text to send:", text);
+     // console.log("Text to send:", text);
 
       const response = await fetch("http://localhost:5000/convert", {
         method: "POST",
@@ -34,7 +34,7 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
         body: JSON.stringify({ text: text }),
       });
 
-      console.log("Request:", response);
+      //console.log("Request:", response);
 
       if (response.ok) {
         const data = await response.json();

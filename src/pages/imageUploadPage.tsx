@@ -42,24 +42,53 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   //
-  const [inputPath, setInputText] = useState("");
+  const [extractedText, setExtractedText] = useState("");
   const [correctedText, setCorrectedText] = useState("");
   //
-  const textExtract = async () => {
+  const handleUpload = async () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
     try {
-      const path = inputPath;
+      const imgString = 'Temp Img String';
+     // console.log("Text From Text box 1:", extractedText);
 
-      console.log("Text to send:", path);
-
-      const response = await fetch("http://localhost:5000/extract_txt", {
+      const response = await fetch("http://localhost:5000/img_string", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: path }),
+        body: JSON.stringify({ img: imgString }),
       });
 
       console.log("Request:", response);
+
+      if (response.ok) {
+        const data = await response.json();
+        setExtractedText(data.extract_txt);
+      } else {
+        console.error("Failed to convert text:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error converting text:", error);
+    }
+  };
+
+  const handleCorrect = async () => {
+    try {
+      const text = extractedText;
+
+      console.log("Text to send:", text);
+
+      const response = await fetch("http://localhost:5000/convert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: text }),
+      });
+
+      //console.log("Request:", response);
 
       if (response.ok) {
         const data = await response.json();
@@ -140,11 +169,7 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
                     px="8"
                     fontWeight="bold"
                     fontSize="md"
-                    onClick={() => {
-                      if (fileInputRef.current) {
-                        fileInputRef.current.click();
-                      }
-                    }}
+                    onClick={handleUpload}
                   >
                     Upload
                   </Button>
@@ -207,7 +232,13 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
                 boxShadow={mode("sm", "sm-dark")}
                 borderRadius="md"
               >
-                <Textarea value="" placeholder="" size="sm" h="100%" disabled />
+                <Textarea value={extractedText}
+                  placeholder="" 
+                  size="sm" 
+                  h="100%" 
+                  style={{ fontSize: "20px" }}
+                  onChange={(e) => setExtractedText(e.target.value)}
+                 />
               </Box>
             </Stack>
             <Button
@@ -216,8 +247,9 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
               variant="solid"
               mt="8"
               px={20}
+              onClick={handleCorrect}
             >
-              Convert
+              Correct
             </Button>
             <Stack>
               <Text mb="8px">Corrected Text: </Text>
@@ -229,7 +261,13 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
                 boxShadow={mode("sm", "sm-dark")}
                 borderRadius="md"
               >
-                <Textarea value="" placeholder="" size="sm" h="100%" disabled />
+                <Textarea  value={correctedText} 
+                           onChange={(e) => setCorrectedText(e.target.value)} 
+                           placeholder="" 
+                           size="sm" 
+                           h="100%" 
+                           style={{ fontSize: "20px" }}
+                           disabled />
               </Box>
             </Stack>
           </Flex>
