@@ -1,43 +1,25 @@
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 from flask import Flask, request, jsonify
 from pytesseract import pytesseract
 from flask_cors import CORS
 import tensorflow as tf
-from transformers import GPT2Tokenizer
+
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Load GPT-2 tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
-
 # Load your pre-trained grammar correction model
-grammar_correction_model = tf.keras.models.load_model(r"grammar_correction_model_new.h5")
+#grammar_correction_model = tf.keras.models.load_model(r"grammar_correction_model_new.h5")
 
 @app.route('/convert', methods=['POST'])
 def convert_text():
     try:
-        # Extract the text from the request body
-        text = request.json.get('text', '')
-
-        # Print the received text on the terminal
-        print("Received text from frontend:", text)
-
-        # Tokenize the input text
-        input_ids = tokenizer.encode(text, return_tensors="tf", max_length=512)
-
-        # Generate corrected text using your pre-trained model
-       # predicted_ids = grammar_correction_model.predict(input_ids)
-        #corrected_text = tokenizer.decode(predicted_ids[0], skip_special_tokens=True)
-
-        # Print the corrected text received from BE
-        print("Received text from BE:", text)
-
         
-        #ocr = OCR()
-        #txt = ocr.getText("D:\Personal\Edu\handwritting-to-text-with-ocr.png");
-        #print (txt)
-        # Return the corrected text to the +
-        return jsonify({'corrected_text': text + ' Converted'}), 200
+        inputText = request.json.get('text', '')
+        outPutText = generate_predictions(inputText,1)
+
+    
+        return jsonify({'corrected_text': outPutText}), 200
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -54,7 +36,22 @@ def extract_text():
     print (text)
     return jsonify({'extracted_txt':'txt msg'}),200
 
+#--------------
+model_path = r'D:\Personal\Edu\FYP - Essentials\t5_gec_model' 
+loaded_model = T5ForConditionalGeneration.from_pretrained(model_path)
+tokenizer = T5Tokenizer.from_pretrained(model_path)
 
+def generate_predictions(input_text, num_return_sequences):
+    batch = tokenizer([input_text], truncation=True, padding='max_length', max_length=64, return_tensors="pt")
+    translated = loaded_model.generate(**batch, max_length=64, num_beams=4, num_return_sequences=num_return_sequences, temperature=1.5)
+    tgt_text = tokenizer.batch_decode(translated, skip_special_tokens=True)
+    
+    # Join the list of strings into a single string
+    result_string = ' '.join(tgt_text)
+    
+    return result_string
+
+#---------------
 
 class OCR:
     def __init__(self) :

@@ -60,7 +60,6 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
         },
         body: JSON.stringify({ img: imgString }),
       });
-
       console.log("Request:", response);
 
       if (response.ok) {
