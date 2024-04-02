@@ -6,21 +6,14 @@ import tensorflow as tf
 
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-
-# Load your pre-trained grammar correction model
-#grammar_correction_model = tf.keras.models.load_model(r"grammar_correction_model_new.h5")
+CORS(app)  
 
 @app.route('/convert', methods=['POST'])
 def convert_text():
-    try:
-        
+    try: 
         inputText = request.json.get('text', '')
-        outPutText = generate_predictions(inputText,1)
-
-    
-        return jsonify({'corrected_text': outPutText}), 200
-        
+        outputText = grammar_corrector(inputText,1)
+        return jsonify({'corrected_text': outputText}), 200      
     except Exception as e:
         return jsonify({'error': str(e)}), 500
         
@@ -41,7 +34,7 @@ model_path = r'D:\Personal\Edu\FYP - Essentials\t5_gec_model'
 loaded_model = T5ForConditionalGeneration.from_pretrained(model_path)
 tokenizer = T5Tokenizer.from_pretrained(model_path)
 
-def generate_predictions(input_text, num_return_sequences):
+def grammar_corrector(input_text, num_return_sequences):
     batch = tokenizer([input_text], truncation=True, padding='max_length', max_length=64, return_tensors="pt")
     translated = loaded_model.generate(**batch, max_length=64, num_beams=4, num_return_sequences=num_return_sequences, temperature=1.5)
     tgt_text = tokenizer.batch_decode(translated, skip_special_tokens=True)
@@ -57,7 +50,6 @@ class OCR:
     def __init__(self) :
         self.path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
-    
     def getText(self,filePath):
         try:
             pytesseract.tesseract_cmd = self.path
@@ -65,7 +57,6 @@ class OCR:
             return text
         except Exception as e:
             return("Error")
-
 
 
 if __name__ == '__main__':

@@ -41,10 +41,9 @@ export type AppProps = BoxProps & {
 export function ImageUpload({ className, children, ...rest }: AppProps) {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  //
   const [extractedText, setExtractedText] = useState("");
   const [correctedText, setCorrectedText] = useState("");
-  //
+
   const handleUpload = async () => {
     if (fileInputRef.current) {
       fileInputRef.current.click()
