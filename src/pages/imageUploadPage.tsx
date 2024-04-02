@@ -38,6 +38,7 @@ export type AppProps = BoxProps & {
   children: ReactNode;
 };
 
+
 export function ImageUpload({ className, children, ...rest }: AppProps) {
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -48,29 +49,80 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
     if (fileInputRef.current) {
       fileInputRef.current.click()
     }
-    try {
-      const imgString = 'Temp Img String';
-     // console.log("Text From Text box 1:", extractedText);
+    
+  };
 
-      const response = await fetch("http://localhost:5000/img_string", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ img: imgString }),
-      });
-      console.log("Request:", response);
-
-      if (response.ok) {
-        const data = await response.json();
-        setExtractedText(data.extract_txt);
-      } else {
-        console.error("Failed to convert text:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error converting text:", error);
+  const handleExtract = async () => {
+    if (uploadedImage) {
+      const reader = new FileReader();
+      reader.readAsDataURL(uploadedImage); // Converts the image to base64 string
+      reader.onload = async () => {
+        const base64String = reader.result;
+        const base64ImageContent = base64String.split(',')[1]; // Removes the data URL prefix to get only the base64-encoded string
+        //console.log(base64ImageContent);
+  
+        try {
+          // Replace the URL with your backend endpoint that handles the base64 string
+          const response = await fetch("http://localhost:5000/img_string", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ imageBase64: base64ImageContent }),
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            // Assuming the backend returns the extracted text in a property named extractedText
+            setExtractedText(data.extractedText);
+          } else {
+            console.error("Failed to extract text from image:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error extracting text from image:", error);
+        }
+      };
+      reader.onerror = (error) => {
+        console.error('Error converting image to base64:', error);
+      };
+    } else {
+      console.log("No image uploaded");
     }
   };
+  
+
+  /*const handleExtract = async () => {
+    // Placeholder for your extraction logic
+    if (uploadedImage) {
+      console.log(" image uploaded");
+
+      try {
+
+        const imgString = 'Temp Img String ';
+       // console.log("Text From Text box 1:", extractedText);
+  
+        const response = await fetch("http://localhost:5000/img_string", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ img: imgString }),
+        });
+        console.log("Request:", response);
+  
+        if (response.ok) {
+          const data = await response.json();
+          setExtractedText(data.extracted_txt);
+        } else {
+          console.error("Failed to convert text:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error converting text:", error);
+      }
+    }
+    
+    // You can add the extraction logic here
+  };*/
 
   const handleCorrect = async () => {
     try {
@@ -221,6 +273,13 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
             justifyContent="center"
           >
             <Stack>
+            <Button
+                colorScheme="blue"
+                onClick={handleExtract}
+                mb={4}
+              >
+                Extract
+              </Button>
               <Text mb="8px">Extracted Text: </Text>
               <Box
                 bg="#858d9d"
@@ -228,12 +287,13 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
                 w="500px"
                 h="500px"
                 boxShadow={mode("sm", "sm-dark")}
-                borderRadius="md"
+                borderRadius="md" 
               >
                 <Textarea value={extractedText}
                   placeholder="" 
                   size="sm" 
                   h="100%" 
+                  disabled 
                   style={{ fontSize: "20px" }}
                   onChange={(e) => setExtractedText(e.target.value)}
                  />
