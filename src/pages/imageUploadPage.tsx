@@ -75,6 +75,7 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
             const data = await response.json();
             // Assuming the backend returns the extracted text in a property named extractedText
             setExtractedText(data.extractedText);
+            
           } else {
             console.error("Failed to extract text from image:", response.statusText);
           }
@@ -90,40 +91,6 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
     }
   };
   
-
-  /*const handleExtract = async () => {
-    // Placeholder for your extraction logic
-    if (uploadedImage) {
-      console.log(" image uploaded");
-
-      try {
-
-        const imgString = 'Temp Img String ';
-       // console.log("Text From Text box 1:", extractedText);
-  
-        const response = await fetch("http://localhost:5000/img_string", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ img: imgString }),
-        });
-        console.log("Request:", response);
-  
-        if (response.ok) {
-          const data = await response.json();
-          setExtractedText(data.extracted_txt);
-        } else {
-          console.error("Failed to convert text:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error converting text:", error);
-      }
-    }
-    
-    // You can add the extraction logic here
-  };*/
-
   const handleCorrect = async () => {
     try {
       const text = extractedText;
@@ -137,8 +104,6 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
         },
         body: JSON.stringify({ text: text }),
       });
-
-      //console.log("Request:", response);
 
       if (response.ok) {
         const data = await response.json();
@@ -228,7 +193,6 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
               <Stack alignItems="center">
               {uploadedImage && (
                   <Stack w="full" spacing={4} alignItems="center">
-                    <Text>{URL.createObjectURL(uploadedImage)}</Text>
                     <AspectRatio w="100%">
                       <Image
                         src={URL.createObjectURL(uploadedImage)}
@@ -293,7 +257,7 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
                   placeholder="" 
                   size="sm" 
                   h="100%" 
-                  disabled 
+                   
                   style={{ fontSize: "20px" }}
                   onChange={(e) => setExtractedText(e.target.value)}
                  />

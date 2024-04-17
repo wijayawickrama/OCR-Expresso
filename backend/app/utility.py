@@ -5,7 +5,7 @@ from pytesseract import pytesseract
 import base64
 
 # Define the path to the T5 model
-model_path = r'D:\Personal\Edu\FYP - Essentials\t5_gec_model' 
+model_path = r'D:\Personal\Edu\OCR-Expresso\t5_gec_model' 
 
 # Load the pre-trained T5 model and tokenizer
 loaded_model = T5ForConditionalGeneration.from_pretrained(model_path)
@@ -50,6 +50,7 @@ class OCR:
             
             # Perform OCR on the image file and extract text
             text = pytesseract.image_to_string(filePath)
+            
             
             return text
         except Exception as e:

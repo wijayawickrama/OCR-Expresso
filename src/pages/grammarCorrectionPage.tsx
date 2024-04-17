@@ -1,3 +1,4 @@
+// Importing necessary React and Chakra UI components
 import React, { useState } from "react";
 import {
   Box,
@@ -12,20 +13,24 @@ import {
 import { Link } from "react-router-dom";
 import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
 
+// Defining the props for the TextCorrection component
 export type AppProps = BoxProps & {
   children: React.ReactNode;
 };
 
+// TextCorrection component for handling and displaying text corrections
 export function TextCorrection({ className, children, ...rest }: AppProps) {
+  // State for storing the input and corrected text
   const [inputText, setInputText] = useState("");
   const [correctedText, setCorrectedText] = useState("");
 
+  // Function to handle text conversion/correction
   const handleConvert = async () => {
     try {
+      // Capturing the current input text
       const text = inputText;
 
-     // console.log("Text to send:", text);
-
+      // Making a POST request to the conversion endpoint
       const response = await fetch("http://localhost:5000/convert", {
         method: "POST",
         headers: {
@@ -34,21 +39,24 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
         body: JSON.stringify({ text: text }),
       });
 
-      //console.log("Request:", response);
-
+      // Handling the response and setting the corrected text
       if (response.ok) {
         const data = await response.json();
         setCorrectedText(data.corrected_text);
       } else {
+        // Handling request errors
         console.error("Failed to convert text:", response.statusText);
       }
     } catch (error) {
+      // Handling unexpected errors
       console.error("Error converting text:", error);
     }
   };
 
+  // Rendering the component UI
   return (
     <Box className={className}>
+      {/* Navigation back button */}
       <IconButton
         as={Link}
         to="/"
@@ -60,6 +68,7 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
         size="sm"
         icon={<ArrowBackIcon />}
       />
+      {/* Main content container */}
       <Box
         as="section"
         h="100vh"
@@ -68,7 +77,9 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
         py="7.5rem"
         height="fit-content"
       >
+        {/* Responsive box for content alignment */}
         <Box maxW={{ base: "xl", md: "5xl" }} mx="auto" h="100%" px={{ base: "6", md: "8" }}>
+          {/* Heading and subheading */}
           <Box textAlign="center">
             <Heading
               as="h1"
@@ -86,7 +97,9 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
             </Text>
           </Box>
 
+          {/* Flex container for text areas and conversion button */}
           <Flex direction="column" gap="4" w="100%" alignItems="center" justifyContent="center">
+            {/* Input text area */}
             <Box>
               <Text mb="8px">Paste Your Text Here: </Text>
               <Box
@@ -106,6 +119,7 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
                 />
               </Box>
             </Box>
+            {/* Button to trigger text conversion */}
             <Button
               rightIcon={<ArrowForwardIcon />}
               colorScheme="blue"
@@ -115,6 +129,7 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
             >
               Convert
             </Button>
+            {/* Display area for corrected text */}
             <Box>
               <Text mb="8px">Corrected Text: </Text>
               <Box
@@ -129,8 +144,7 @@ export function TextCorrection({ className, children, ...rest }: AppProps) {
                   placeholder=""
                   size="sm"
                   h="100%"
-                  style={{ fontSize: "20px",color:"white" }}
-                  
+                  style={{ fontSize: "20px", color:"white" }}
                 />
               </Box>
             </Box>
