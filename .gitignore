@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+t5_gec_model/config.json
+t5_gec_model/pytorch_model.bin
+t5_gec_model/special_tokens_map.json
+t5_gec_model/spiece.model
+t5_gec_model/tokenizer_config.json
+t5_gec_model/training_args.bin
