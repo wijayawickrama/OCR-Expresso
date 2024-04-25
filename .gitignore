@@ -27,3 +27,9 @@ t5_gec_model/special_tokens_map.json
 t5_gec_model/spiece.model
 t5_gec_model/tokenizer_config.json
 t5_gec_model/training_args.bin
+OCR Expresso.pptx
+~$OCR Expresso.pptx
+backend/app/__pycache__/utility.cpython-38.pyc
+backend/app/__pycache__/__init__.cpython-38.pyc
+backend/app/__pycache__/utility.cpython-38.pyc
+backend/app/__pycache__/routs.cpython-38.pyc
