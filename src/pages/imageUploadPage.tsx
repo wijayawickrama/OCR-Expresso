@@ -192,15 +192,18 @@ export function ImageUpload({ className, children, ...rest }: AppProps) {
               </Stack>
               <Stack alignItems="center">
               {uploadedImage && (
-                  <Stack w="full" spacing={4} alignItems="center">
+                  <Stack w="200%" spacing={4} alignItems="center">
                     <AspectRatio w="100%">
                       <Image
                         src={URL.createObjectURL(uploadedImage)}
                         objectPosition="top"
-                        objectFit="cover"
+                        style={{
+                          objectFit: 'fill',
+                        }}
                         fallback={<Skeleton />}
                         alt="uploaded picture"
                         borderRadius="xl"
+
                       />
                     </AspectRatio>
                     <IconButton
